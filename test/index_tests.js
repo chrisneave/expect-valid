@@ -91,6 +91,21 @@ describe('assertion methods', function() {
       expect(subject.results[0]).to.eql('Expected {"foo":"bar"} to kind of equal {"foo":"gumpf"}');
     });
   });
+
+  describe('#ok', function() {
+    it('can test for truthyness', function() {
+      expect(subject.expect('1').to.be.ok).to.be.true;
+    });
+
+    it('can fail truthyness', function() {
+      expect(subject.expect(undefined).to.be.ok).to.be.false;
+      expect(subject.results[0]).to.eql('Expected undefined to be truthy');
+    });
+
+    it('can negate truthyness', function() {
+      expect(subject.expect('1').to.not.be.ok).to.be.false;
+    });
+  });
 });
 
 describe('language chains', function() {

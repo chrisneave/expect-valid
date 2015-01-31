@@ -35,6 +35,7 @@ function Validator() {
     var value = find(subject, path);
     var notTo = {};
     var to = {};
+    var be = {};
 
     var equal = function(equalTo) {
       if ((value === equalTo) === this.negate) {
@@ -61,6 +62,24 @@ function Validator() {
       return true;
     }
 
+    var ok = function() {
+      if (!value && this.negate === false) {
+        addResult('Expected %s to be truthy', path || value);
+        return false;
+      }
+
+      if (value && this.negate === true) {
+        addResult('Expected %s to be truthy', path || value);
+        return false;
+      }
+
+      return true;
+    }
+
+    Object.defineProperty(be, 'ok', {
+      get: ok
+    });
+
     notTo.negate = to.negate = false;
     notTo.equal = to.equal = equal;
     notTo.eql = to.eql = eql;
@@ -69,6 +88,20 @@ function Validator() {
       get: function() {
         notTo.negate = true;
         return notTo;
+      }
+    });
+
+    Object.defineProperty(to, 'be', {
+      get: function() {
+        be.negate = false;
+        return be;
+      }
+    });
+
+    Object.defineProperty(notTo, 'be', {
+      get: function() {
+        be.negate = true;
+        return be;
       }
     });
 
