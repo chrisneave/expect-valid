@@ -71,6 +71,26 @@ describe('assertion methods', function() {
       expect(subject.results[0]).to.equal('Expected 1 to equal \'1\'');
     });
   });
+
+  describe('#eql', function() {
+    it('can test for deep equality', function() {
+      expect(subject.expect('1').to.eql(1)).to.be.true;
+    });
+
+    it('can fail deep equality', function() {
+      expect(subject.expect('one').to.eql(1)).to.be.false;
+      expect(subject.results[0]).to.eql('Expected \'one\' to kind of equal 1');
+    });
+
+    it('can test for deep equality on objects', function() {
+      expect(subject.expect({ foo: 'bar' }).to.eql({ foo: 'bar' })).to.be.true;
+    });
+
+    it('can fail deep equality on objects', function() {
+      expect(subject.expect({ foo: 'bar' }).to.eql({ foo: 'gumpf' })).to.be.false;
+      expect(subject.results[0]).to.eql('Expected {"foo":"bar"} to kind of equal {"foo":"gumpf"}');
+    });
+  });
 });
 
 describe('language chains', function() {

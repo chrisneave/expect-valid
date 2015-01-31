@@ -17,6 +17,10 @@ function format(value) {
   if (_.isNumber(value)) {
     return value;
   }
+
+  if (_.isObject(value)) {
+    return printf('%s', JSON.stringify(value));
+  }
 }
 
 function Validator() {
@@ -41,8 +45,25 @@ function Validator() {
       return true;
     }
 
+    var eql = function(equalTo) {
+      if (_.isObject(value)) {
+        if (_.isEqual(value, equalTo) === this.negate) {
+          addResult('Expected %s to kind of equal %s', path || value, equalTo);
+          return false;
+        }
+      } else {
+        if ((value == equalTo) === this.negate) {
+          addResult('Expected %s to kind of equal %s', path || value, equalTo);
+          return false;
+        }
+      }
+
+      return true;
+    }
+
     notTo.negate = to.negate = false;
     notTo.equal = to.equal = equal;
+    notTo.eql = to.eql = eql;
 
     Object.defineProperty(to, 'not', {
       get: function() {
