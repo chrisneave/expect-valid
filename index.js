@@ -29,16 +29,31 @@ function Validator() {
 
   self.expect = function(subject, path) {
     var value = find(subject, path);
+    var notTo = {};
+    var to = {};
+
+    var equal = function(equalTo) {
+      if ((value === equalTo) === this.negate) {
+        addResult('Expected %s to equal %s', path || value, equalTo);
+        return false;
+      }
+
+      return true;
+    }
+
+    notTo.negate = to.negate = false;
+    notTo.equal = to.equal = equal;
+
+    Object.defineProperty(to, 'not', {
+      get: function() {
+        notTo.negate = true;
+        return notTo;
+      }
+    });
 
     return {
       value: value,
-      to: {
-        equal: function(equalTo) {
-          if (value !== equalTo) {
-            addResult('Expected %s to equal %s', path || value, equalTo);
-          }
-        }
-      }
+      to: to
     }
   }
 }

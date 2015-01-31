@@ -63,13 +63,30 @@ describe('assertion methods', function() {
 
   describe('#equal', function() {
     it('can test for strict equality', function() {
-      subject.expect('foo').to.equal('foo');
-      expect(subject.results).to.be.empty;
+      expect(subject.expect('foo').to.equal('foo')).to.be.true;
     });
 
     it('can fail strict equality', function() {
-      subject.expect(1).to.equal('1');
+      expect(subject.expect(1).to.equal('1')).to.be.false;
       expect(subject.results[0]).to.equal('Expected 1 to equal \'1\'');
+    });
+  });
+});
+
+describe('language chains', function() {
+  var subject;
+
+  beforeEach(function() {
+    subject = new Validator();
+  });
+
+  describe('#not', function() {
+    it('negates any chained assertions', function() {
+      expect(subject.expect('foo').to.not.equal('bar')).to.be.true;
+    });
+
+    it('not possible to \'not\' a not', function() {
+      expect(subject.expect('foo').to.not).to.not.have.property('not');
     });
   });
 });
