@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var printf = require('printf');
+var util = require('util');
 
 function find(object, path) {
   if (!_.isString(path)) { return object; }
@@ -11,7 +11,7 @@ function find(object, path) {
 
 function format(value) {
   if (_.isString(value)) {
-    return printf('\'%s\'', value);
+    return util.format('\'%s\'', value);
   }
 
   if (_.isNumber(value)) {
@@ -19,7 +19,7 @@ function format(value) {
   }
 
   if (_.isObject(value)) {
-    return printf('%s', JSON.stringify(value));
+    return util.format('%s', JSON.stringify(value));
   }
 }
 
@@ -27,8 +27,13 @@ function Validator() {
   var self = this;
   self.results = [];
 
-  var addResult = function(message, path, equalTo) {
-    self.results.push(printf(message, format(path), format(equalTo)));
+  var addResult = function(message) {
+    otherArgs = _.map(_.tail(arguments, 1), function(arg) {
+      return format(arg);
+    });
+    otherArgs.unshift(message);
+
+    self.results.push(util.format.apply(this, otherArgs));
   }
 
   self.expect = function(subject, path) {
