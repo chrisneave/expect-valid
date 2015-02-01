@@ -8,7 +8,7 @@
     "url": "https://github.com/chrisneave/expect-valid.git"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "./node_modules/.bin/mocha",
     "lint": "./node_modules/.bin/jshint index.js ./test/index_tests.js"
   },
   "author": "Chris Neave <chrispneave@gmail.com>",
