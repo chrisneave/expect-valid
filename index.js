@@ -28,37 +28,75 @@ function format(value) {
 }
 
 function equal(equalTo) {
-  if ((this.value === equalTo) === this.negate) {
-    this.addResult('Expected %s to equal %s', this.path || this.value, equalTo);
-    return false;
+  var result = true;
+
+  if (this.value !== equalTo) {
+    result = false;
   }
 
-  return true;
+  if (this.negate) {
+    result = !result;
+  }
+
+  if (!result) {
+    if (this.negate) {
+      this.addResult('Expected %s to not equal %s', this.path || this.value, equalTo);
+    } else {
+      this.addResult('Expected %s to equal %s', this.path || this.value, equalTo);
+    }
+  }
+
+  return result;
 }
 
 function eql(equalTo) {
+  var result = true;
+
   if (_.isObject(this.value)) {
-    if (_.isEqual(this.value, equalTo) === this.negate) {
-      this.addResult('Expected %s to kind of equal %s', this.path || this.value, equalTo);
-      return false;
+    if (!_.isEqual(this.value, equalTo)) {
+      result = false;
     }
   } else {
-    if ((this.value == equalTo) === this.negate) {
-      this.addResult('Expected %s to kind of equal %s', this.path || this.value, equalTo);
-      return false;
+    if (this.value != equalTo) {
+      result = false;
     }
   }
 
-  return true;
+  if (this.negate) {
+    result = !result;
+  }
+
+  if (!result) {
+    if (this.negate) {
+      this.addResult('Expected %s to kind of not equal %s', this.path || this.value, equalTo);
+    } else {
+      this.addResult('Expected %s to kind of equal %s', this.path || this.value, equalTo);
+    }
+  }
+
+  return result;
 }
 
 function ok() {
-  if ((!this.value && this.negate === false) || (this.value && this.negate === true)) {
-    this.addResult('Expected %s to be truthy', this.path || this.value);
-    return false;
+  var result = true;
+
+  if (!this.value) {
+    result = false;
   }
 
-  return true;
+  if (this.negate) {
+    result = !result;
+  }
+
+  if (!result) {
+    if (this.negate) {
+      this.addResult('Expected %s to not be truthy', this.path || this.value);
+    } else {
+      this.addResult('Expected %s to be truthy', this.path || this.value);
+    }
+  }
+
+  return result;
 }
 
 function empty() {
@@ -71,7 +109,11 @@ function empty() {
   }
 
   if (!result) {
-    this.addResult('Expected %s to be empty', this.path || this.value);
+    if (this.negate) {
+      this.addResult('Expected %s to not be empty', this.path || this.value);
+    } else {
+      this.addResult('Expected %s to be empty', this.path || this.value);
+    }
   }
 
   return result;

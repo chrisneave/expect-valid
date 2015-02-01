@@ -64,33 +64,70 @@ describe('assertion methods', function() {
   });
 
   describe('#equal', function() {
-    it('can test for strict equality', function() {
-      expect(subject.expect('foo').to.equal('foo')).to.be.true;
-    });
+    describe('strings', function() {
+      it('can test for strict equality', function() {
+        expect(subject.expect('foo').to.equal('foo')).to.be.true;
+      });
 
-    it('can fail strict equality', function() {
-      expect(subject.expect(1).to.equal('1')).to.be.false;
-      expect(subject.results[0]).to.equal('Expected 1 to equal \'1\'');
+      it('can negate test for strict equality', function() {
+        expect(subject.expect('foo').to.not.equal('foo')).to.be.false;
+        expect(subject.results[0]).to.equal('Expected \'foo\' to not equal \'foo\'');
+      });
+
+      it('can fail strict equality', function() {
+        expect(subject.expect('1').to.equal('2')).to.be.false;
+        expect(subject.results[0]).to.equal('Expected \'1\' to equal \'2\'');
+      });
     });
   });
 
   describe('#eql', function() {
-    it('can test for deep equality', function() {
-      expect(subject.expect('1').to.eql(1)).to.be.true;
+    describe('strings', function() {
+      it('can test for deep equality', function() {
+        expect(subject.expect('1').to.eql(1)).to.be.true;
+      });
+
+      it('can negate test for deep equality', function() {
+        expect(subject.expect('1').to.not.eql(1)).to.be.false;
+        expect(subject.results[0]).to.eql('Expected \'1\' to kind of not equal 1');
+      });
+
+      it('can fail deep equality', function() {
+        expect(subject.expect('one').to.eql(1)).to.be.false;
+        expect(subject.results[0]).to.eql('Expected \'one\' to kind of equal 1');
+      });
     });
 
-    it('can fail deep equality', function() {
-      expect(subject.expect('one').to.eql(1)).to.be.false;
-      expect(subject.results[0]).to.eql('Expected \'one\' to kind of equal 1');
+    describe('arrays', function() {
+      it('can test for deep equality', function() {
+        expect(subject.expect([1,2,3]).to.eql([1,2,3])).to.be.true;
+      });
+
+      it('can negate test for deep equality', function() {
+        expect(subject.expect([1,2,3]).to.not.eql([1,2,3])).to.be.false;
+        expect(subject.results[0]).to.eql('Expected [1,2,3] to kind of not equal [1,2,3]');
+      });
+
+      it('can fail deep equality', function() {
+        expect(subject.expect({ foo: 'bar' }).to.eql({ foo: 'gumpf' })).to.be.false;
+        expect(subject.results[0]).to.eql('Expected {"foo":"bar"} to kind of equal {"foo":"gumpf"}');
+      });
     });
 
-    it('can test for deep equality on objects', function() {
-      expect(subject.expect({ foo: 'bar' }).to.eql({ foo: 'bar' })).to.be.true;
-    });
+    describe('objects', function() {
+      it('can test for deep equality', function() {
+        expect(subject.expect({ foo: 'bar' }).to.eql({ foo: 'bar' })).to.be.true;
+      });
 
-    it('can fail deep equality on objects', function() {
-      expect(subject.expect({ foo: 'bar' }).to.eql({ foo: 'gumpf' })).to.be.false;
-      expect(subject.results[0]).to.eql('Expected {"foo":"bar"} to kind of equal {"foo":"gumpf"}');
+      it('can negate test for deep equality', function() {
+        expect(subject.expect({ foo: 'bar' }).to.not.eql({ foo: 'bar' })).to.be.false;
+        expect(subject.results[0]).to.eql('Expected {"foo":"bar"} to kind of not equal {"foo":"bar"}');
+      });
+
+      it('can fail deep equality', function() {
+        expect(subject.expect({ foo: 'bar' }).to.eql({ foo: 'gumpf' })).to.be.false;
+        expect(subject.results[0]).to.eql('Expected {"foo":"bar"} to kind of equal {"foo":"gumpf"}');
+      });
     });
   });
 
@@ -99,13 +136,14 @@ describe('assertion methods', function() {
       expect(subject.expect('1').to.be.ok).to.be.true;
     });
 
+    it('can negate truthyness', function() {
+      expect(subject.expect('1').to.not.be.ok).to.be.false;
+      expect(subject.results[0]).to.eql('Expected \'1\' to not be truthy');
+    });
+
     it('can fail truthyness', function() {
       expect(subject.expect(undefined).to.be.ok).to.be.false;
       expect(subject.results[0]).to.eql('Expected undefined to be truthy');
-    });
-
-    it('can negate truthyness', function() {
-      expect(subject.expect('1').to.not.be.ok).to.be.false;
     });
   });
 
@@ -115,13 +153,14 @@ describe('assertion methods', function() {
         expect(subject.expect('').to.be.empty).to.be.true;
       });
 
+      it('can negate test for emptiness', function() {
+        expect(subject.expect('').to.not.be.empty).to.be.false;
+        expect(subject.results[0]).to.equal('Expected \'\' to not be empty');
+      });
+
       it('can test for not emptiness', function() {
         expect(subject.expect('aa').to.be.empty).to.be.false;
         expect(subject.results[0]).to.equal('Expected \'aa\' to be empty');
-      });
-
-      it('can negate test for emptiness', function() {
-        expect(subject.expect('').to.not.be.empty).to.be.false;
       });
     });
 
@@ -130,13 +169,14 @@ describe('assertion methods', function() {
         expect(subject.expect([]).to.be.empty).to.be.true;
       });
 
+      it('can negate test for emptiness', function() {
+        expect(subject.expect([]).to.not.be.empty).to.be.false;
+        expect(subject.results[0]).to.equal('Expected [] to not be empty');
+      });
+
       it('can test for not emptiness', function() {
         expect(subject.expect([1,2,3]).to.be.empty).to.be.false;
         expect(subject.results[0]).to.equal('Expected [1,2,3] to be empty');
-      });
-
-      it('can negate test for emptiness', function() {
-        expect(subject.expect([]).to.not.be.empty).to.be.false;
       });
     });
 
@@ -145,13 +185,14 @@ describe('assertion methods', function() {
         expect(subject.expect({}).to.be.empty).to.be.true;
       });
 
+      it('can negate test for emptiness', function() {
+        expect(subject.expect({}).to.not.be.empty).to.be.false;
+        expect(subject.results[0]).to.equal('Expected {} to not be empty');
+      });
+
       it('can test for not emptiness', function() {
         expect(subject.expect({foo: 'bar'}).to.be.empty).to.be.false;
         expect(subject.results[0]).to.equal('Expected {"foo":"bar"} to be empty');
-      });
-
-      it('can negate test for emptiness', function() {
-        expect(subject.expect({}).to.not.be.empty).to.be.false;
       });
     });
   });
