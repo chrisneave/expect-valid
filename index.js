@@ -21,6 +21,10 @@ function format(value) {
   if (_.isObject(value)) {
     return util.format('%s', JSON.stringify(value));
   }
+
+  if (_.isNull(value)) {
+    return 'null';
+  }
 }
 
 function equal(equalTo) {
@@ -73,6 +77,28 @@ function empty() {
   return result;
 }
 
+function exist() {
+  var result = true;
+
+  if (_.isNull(this.value) || _.isUndefined(this.value)) {
+    result = false;
+  }
+
+  if (this.negate) {
+    result = !result;
+  }
+
+  if (!result) {
+    if (this.negate) {
+      this.addResult('Expected %s to not exist', this.path || this.value);
+    } else {
+      this.addResult('Expected %s to exist', this.path || this.value);
+    }
+  }
+
+  return result;
+}
+
 function be() {
   Object.defineProperty(this, 'ok', {
     get: ok
@@ -102,6 +128,10 @@ function to() {
   Object.defineProperty(this, 'not', {
     configurable: true,
     get: not
+  });
+
+  Object.defineProperty(this, 'exist', {
+    get: exist
   });
 
   return this;

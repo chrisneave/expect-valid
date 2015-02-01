@@ -155,6 +155,22 @@ describe('assertion methods', function() {
       });
     });
   });
+
+  describe('#exist', function() {
+    it('can test for existence', function() {
+      expect(subject.expect('foo').to.exist).to.be.true;
+    });
+
+    it('can negate test for existence', function() {
+      expect(subject.expect('foo').to.not.exist).to.be.false;
+      expect(subject.results[0]).to.equal('Expected \'foo\' to not exist');
+    });
+
+    it('can test for non-existence', function() {
+      expect(subject.expect(null).to.exist).to.be.false;
+      expect(subject.results[0]).to.equal('Expected null to exist');
+    });
+  });
 });
 
 describe('language chains', function() {
