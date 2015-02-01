@@ -108,6 +108,53 @@ describe('assertion methods', function() {
       expect(subject.expect('1').to.not.be.ok).to.be.false;
     });
   });
+
+  describe('#empty', function() {
+    describe('strings', function() {
+      it('can test for emptiness', function() {
+        expect(subject.expect('').to.be.empty).to.be.true;
+      });
+
+      it('can test for not emptiness', function() {
+        expect(subject.expect('aa').to.be.empty).to.be.false;
+        expect(subject.results[0]).to.equal('Expected \'aa\' to be empty');
+      });
+
+      it('can negate test for emptiness', function() {
+        expect(subject.expect('').to.not.be.empty).to.be.false;
+      });
+    });
+
+    describe('arrays', function() {
+      it('can test for emptiness', function() {
+        expect(subject.expect([]).to.be.empty).to.be.true;
+      });
+
+      it('can test for not emptiness', function() {
+        expect(subject.expect([1,2,3]).to.be.empty).to.be.false;
+        expect(subject.results[0]).to.equal('Expected [1,2,3] to be empty');
+      });
+
+      it('can negate test for emptiness', function() {
+        expect(subject.expect([]).to.not.be.empty).to.be.false;
+      });
+    });
+
+    describe('objects', function() {
+      it('can test for emptiness', function() {
+        expect(subject.expect({}).to.be.empty).to.be.true;
+      });
+
+      it('can test for not emptiness', function() {
+        expect(subject.expect({foo: 'bar'}).to.be.empty).to.be.false;
+        expect(subject.results[0]).to.equal('Expected {"foo":"bar"} to be empty');
+      });
+
+      it('can negate test for emptiness', function() {
+        expect(subject.expect({}).to.not.be.empty).to.be.false;
+      });
+    });
+  });
 });
 
 describe('language chains', function() {

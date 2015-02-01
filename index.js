@@ -57,9 +57,29 @@ function ok() {
   return true;
 }
 
+function empty() {
+  var result;
+
+  if (this.negate) {
+    result = !_.isEmpty(this.value);
+  } else {
+    result = _.isEmpty(this.value);
+  }
+
+  if (!result) {
+    this.addResult('Expected %s to be empty', this.path || this.value);
+  }
+
+  return result;
+}
+
 function be() {
   Object.defineProperty(this, 'ok', {
     get: ok
+  });
+
+  Object.defineProperty(this, 'empty', {
+    get: empty
   });
 
   return this;
