@@ -68,12 +68,8 @@ function Validator() {
     }
 
     var ok = function() {
-      if (!value && this.negate === false) {
-        addResult('Expected %s to be truthy', path || value);
-        return false;
-      }
-
-      if (value && this.negate === true) {
+      if ((!value && this.negate === false) ||
+          (value && this.negate === true)) {
         addResult('Expected %s to be truthy', path || value);
         return false;
       }
