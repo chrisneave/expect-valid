@@ -23,7 +23,7 @@ function format(value) {
   }
 }
 
-var equal = function(equalTo) {
+function equal(equalTo) {
   if ((this.value === equalTo) === this.negate) {
     this.addResult('Expected %s to equal %s', this.path || this.value, equalTo);
     return false;
@@ -32,7 +32,7 @@ var equal = function(equalTo) {
   return true;
 }
 
-var eql = function(equalTo) {
+function eql(equalTo) {
   if (_.isObject(this.value)) {
     if (_.isEqual(this.value, equalTo) === this.negate) {
       this.addResult('Expected %s to kind of equal %s', this.path || this.value, equalTo);
@@ -98,7 +98,7 @@ function Validator() {
     otherArgs.unshift(message);
 
     self.results.push(util.format.apply(this, otherArgs));
-  }
+  };
 
   self.expect = function(subject, path) {
     var context = {
@@ -113,8 +113,7 @@ function Validator() {
     });
 
     return context;
-  }
+  };
 }
-
 
 module.exports = Validator;

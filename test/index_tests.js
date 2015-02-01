@@ -1,3 +1,5 @@
+/*jshint expr: true*/
+
 var Validator = require('../index');
 var expect = require('chai').expect;
 

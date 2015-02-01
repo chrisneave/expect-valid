@@ -8,12 +8,14 @@
     "url": "https://github.com/chrisneave/expect-valid.git"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "lint": "./node_modules/.bin/jshint index.js ./test/index_tests.js"
   },
   "author": "Chris Neave <chrispneave@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "chai": "^1.10.0",
+    "jshint": "^2.6.0",
     "mocha": "^2.1.0"
   },
   "dependencies": {
