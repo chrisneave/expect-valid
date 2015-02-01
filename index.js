@@ -23,6 +23,70 @@ function format(value) {
   }
 }
 
+var equal = function(equalTo) {
+  if ((this.value === equalTo) === this.negate) {
+    this.addResult('Expected %s to equal %s', this.path || this.value, equalTo);
+    return false;
+  }
+
+  return true;
+}
+
+var eql = function(equalTo) {
+  if (_.isObject(this.value)) {
+    if (_.isEqual(this.value, equalTo) === this.negate) {
+      this.addResult('Expected %s to kind of equal %s', this.path || this.value, equalTo);
+      return false;
+    }
+  } else {
+    if ((this.value == equalTo) === this.negate) {
+      this.addResult('Expected %s to kind of equal %s', this.path || this.value, equalTo);
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function ok() {
+  if ((!this.value && this.negate === false) || (this.value && this.negate === true)) {
+    this.addResult('Expected %s to be truthy', this.path || this.value);
+    return false;
+  }
+
+  return true;
+}
+
+function be() {
+  Object.defineProperty(this, 'ok', {
+    get: ok
+  });
+
+  return this;
+}
+
+function not() {
+  this.negate = true;
+  delete this.not;
+  return this;
+}
+
+function to() {
+  this.eql = eql;
+  this.equal = equal;
+
+  Object.defineProperty(this, 'be', {
+    get: be
+  });
+
+  Object.defineProperty(this, 'not', {
+    configurable: true,
+    get: not
+  });
+
+  return this;
+}
+
 function Validator() {
   var self = this;
   self.results = [];
@@ -40,68 +104,12 @@ function Validator() {
     var context = {
       value: find(subject, path),
       path: path,
-      negate: false
+      negate: false,
+      addResult: addResult
     };
 
-    var equal = function(equalTo) {
-      if ((this.value === equalTo) === this.negate) {
-        addResult('Expected %s to equal %s', this.path || this.value, equalTo);
-        return false;
-      }
-
-      return true;
-    }
-
-    var eql = function(equalTo) {
-      if (_.isObject(this.value)) {
-        if (_.isEqual(this.value, equalTo) === this.negate) {
-          addResult('Expected %s to kind of equal %s', this.path || this.value, equalTo);
-          return false;
-        }
-      } else {
-        if ((this.value == equalTo) === this.negate) {
-          addResult('Expected %s to kind of equal %s', this.path || this.value, equalTo);
-          return false;
-        }
-      }
-
-      return true;
-    }
-
     Object.defineProperty(context, 'to', {
-      get: function() {
-        this.eql = eql;
-        this.equal = equal;
-
-        Object.defineProperty(this, 'be', {
-          get: function() {
-
-            Object.defineProperty(this, 'ok', {
-              get: function() {
-                if ((!this.value && this.negate === false) || (this.value && this.negate === true)) {
-                  addResult('Expected %s to be truthy', this.path || this.value);
-                  return false;
-                }
-
-                return true;
-              }
-            });
-
-            return this;
-          }
-        });
-
-        Object.defineProperty(this, 'not', {
-          configurable: true,
-          get: function() {
-            this.negate = true;
-            delete this.not;
-            return this;
-          }
-        });
-
-        return this;
-      }
+      get: to
     });
 
     return context;
