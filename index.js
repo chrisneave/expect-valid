@@ -27,127 +27,54 @@ function format(value) {
   }
 }
 
-function equal(equalTo) {
-  var result = true;
+function assert(predicate, message, negatedMessage) {
+  return function() {
+    var result = predicate.apply(this, arguments);
 
-  if (this.value !== equalTo) {
-    result = false;
-  }
-
-  if (this.negate) {
-    result = !result;
-  }
-
-  if (!result) {
     if (this.negate) {
-      this.addResult('Expected %s to not equal %s', this.path || this.value, equalTo);
-    } else {
-      this.addResult('Expected %s to equal %s', this.path || this.value, equalTo);
+      result = !result;
     }
-  }
 
-  return result;
+    if (!result) {
+      if (!this.negate) {
+        this.addResult(message, this.path || this.value, arguments[0]);
+      } else {
+        this.addResult(negatedMessage, this.path || this.value, arguments[0]);
+      }
+    }
+
+    return result;
+  }
+}
+
+function equal(equalTo) {
+  return this.value === equalTo;
 }
 
 function eql(equalTo) {
-  var result = true;
-
-  if (_.isObject(this.value)) {
-    if (!_.isEqual(this.value, equalTo)) {
-      result = false;
-    }
-  } else {
-    if (this.value != equalTo) {
-      result = false;
-    }
-  }
-
-  if (this.negate) {
-    result = !result;
-  }
-
-  if (!result) {
-    if (this.negate) {
-      this.addResult('Expected %s to kind of not equal %s', this.path || this.value, equalTo);
-    } else {
-      this.addResult('Expected %s to kind of equal %s', this.path || this.value, equalTo);
-    }
-  }
-
-  return result;
+  if (_.isObject(this.value)) { return _.isEqual(this.value, equalTo); }
+  return this.value == equalTo;
 }
 
 function ok() {
-  var result = true;
-
-  if (!this.value) {
-    result = false;
-  }
-
-  if (this.negate) {
-    result = !result;
-  }
-
-  if (!result) {
-    if (this.negate) {
-      this.addResult('Expected %s to not be truthy', this.path || this.value);
-    } else {
-      this.addResult('Expected %s to be truthy', this.path || this.value);
-    }
-  }
-
-  return result;
+  return this.value == true;
 }
 
 function empty() {
-  var result;
-
-  if (this.negate) {
-    result = !_.isEmpty(this.value);
-  } else {
-    result = _.isEmpty(this.value);
-  }
-
-  if (!result) {
-    if (this.negate) {
-      this.addResult('Expected %s to not be empty', this.path || this.value);
-    } else {
-      this.addResult('Expected %s to be empty', this.path || this.value);
-    }
-  }
-
-  return result;
+  return _.isEmpty(this.value);
 }
 
 function exist() {
-  var result = true;
-
-  if (_.isNull(this.value) || _.isUndefined(this.value)) {
-    result = false;
-  }
-
-  if (this.negate) {
-    result = !result;
-  }
-
-  if (!result) {
-    if (this.negate) {
-      this.addResult('Expected %s to not exist', this.path || this.value);
-    } else {
-      this.addResult('Expected %s to exist', this.path || this.value);
-    }
-  }
-
-  return result;
+  return !(_.isNull(this.value) || _.isUndefined(this.value));
 }
 
 function be() {
   Object.defineProperty(this, 'ok', {
-    get: ok
+    get: assert(ok, 'Expected %s to be truthy', 'Expected %s to not be truthy')
   });
 
   Object.defineProperty(this, 'empty', {
-    get: empty
+    get: assert(empty, 'Expected %s to be empty', 'Expected %s to not be empty')
   });
 
   return this;
@@ -160,8 +87,8 @@ function not() {
 }
 
 function to() {
-  this.eql = eql;
-  this.equal = equal;
+  this.eql = assert(eql, 'Expected %s to kind of equal %s', 'Expected %s to kind of not equal %s');
+  this.equal = assert(equal, 'Expected %s to equal %s', 'Expected %s to not equal %s');
 
   Object.defineProperty(this, 'be', {
     get: be
@@ -173,7 +100,7 @@ function to() {
   });
 
   Object.defineProperty(this, 'exist', {
-    get: exist
+    get: assert(exist, 'Expected %s to exist', 'Expected %s to not exist')
   });
 
   return this;
@@ -184,12 +111,14 @@ function Validator() {
   self.results = [];
 
   var addResult = function(message) {
-    otherArgs = _.map(_.tail(arguments, 1), function(arg) {
+    // Exclude any arguments that are not explicitly stated in the message.
+    var otherArgs = _.tail(arguments);
+    formattedArgs = _.map(_.head(otherArgs, message.match(/(%s)/g).length), function(arg) {
       return format(arg);
     });
-    otherArgs.unshift(message);
+    formattedArgs.unshift(message);
 
-    self.results.push(util.format.apply(this, otherArgs));
+    self.results.push(util.format.apply(this, formattedArgs));
   };
 
   self.expect = function(subject, path) {
