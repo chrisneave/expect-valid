@@ -212,6 +212,22 @@ describe('assertion methods', function() {
       expect(subject.results[0]).to.equal('Expected null to exist');
     });
   });
+
+  describe('#in', function() {
+    it('can test for inclusion', function() {
+      expect(subject.expect('bar').to.be.oneOf(['foo', 'bar', 'baz'])).to.be.true;
+    });
+
+    it('can test for non-existence', function() {
+      expect(subject.expect('bar').to.be.oneOf(['foo', 'baz'])).to.be.false;
+      expect(subject.results[0]).to.equal('Expected \'bar\' to be one of ["foo","baz"]');
+    });
+
+    it('can negate test for existence', function() {
+      expect(subject.expect('bar').to.not.be.oneOf(['foo', 'bar', 'baz'])).to.be.false;
+      expect(subject.results[0]).to.equal('Expected \'bar\' to not be one of ["foo","bar","baz"]');
+    });
+  });
 });
 
 describe('language chains', function() {

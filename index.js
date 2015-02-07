@@ -68,6 +68,10 @@ function exist() {
   return !(_.isNull(this.value) || _.isUndefined(this.value));
 }
 
+function oneOf(set) {
+  return _.contains(set, this.value);
+}
+
 function be() {
   Object.defineProperty(this, 'ok', {
     get: assert(ok, 'Expected %s to be truthy', 'Expected %s to not be truthy')
@@ -76,6 +80,8 @@ function be() {
   Object.defineProperty(this, 'empty', {
     get: assert(empty, 'Expected %s to be empty', 'Expected %s to not be empty')
   });
+
+  this.oneOf = assert(oneOf, 'Expected %s to be one of %s', 'Expected %s to not be one of %s');
 
   return this;
 }
