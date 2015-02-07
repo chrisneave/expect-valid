@@ -48,7 +48,7 @@ function assert(predicate, message, negatedMessage) {
     }
 
     return result;
-  }
+  };
 }
 
 function equal(equalTo) {
@@ -61,7 +61,7 @@ function eql(equalTo) {
 }
 
 function ok() {
-  return this.value == true;
+  return this.value == true; // jshint ignore:line
 }
 
 function empty() {
