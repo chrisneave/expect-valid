@@ -228,6 +228,22 @@ describe('assertion methods', function() {
       expect(subject.results[0]).to.equal('Expected \'bar\' to not be one of ["foo","bar","baz"]');
     });
   });
+
+  describe('#in', function() {
+    it('can test for a RegEx match', function() {
+      expect(subject.expect('bar').to.match(/bar/)).to.be.true;
+    });
+
+    it('can test for a RegEx non-match', function() {
+      expect(subject.expect('bar').to.match(/foo/)).to.be.false;
+      expect(subject.results[0]).to.equal('Expected \'bar\' to match /foo/');
+    });
+
+    it('can negate test for a RegEx match', function() {
+      expect(subject.expect('bar').to.not.match(/bar/)).to.be.false;
+      expect(subject.results[0]).to.equal('Expected \'bar\' to not match /bar/');
+    });
+  });
 });
 
 describe('language chains', function() {

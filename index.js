@@ -18,6 +18,10 @@ function format(value) {
     return value;
   }
 
+  if (_.isRegExp(value)) {
+    return value.toString();
+  }
+
   if (_.isObject(value)) {
     return util.format('%s', JSON.stringify(value));
   }
@@ -72,6 +76,10 @@ function oneOf(set) {
   return _.contains(set, this.value);
 }
 
+function match(regexp) {
+  return regexp.test(this.value);
+}
+
 function be() {
   Object.defineProperty(this, 'ok', {
     get: assert(ok, 'Expected %s to be truthy', 'Expected %s to not be truthy')
@@ -95,6 +103,7 @@ function not() {
 function to() {
   this.eql = assert(eql, 'Expected %s to kind of equal %s', 'Expected %s to kind of not equal %s');
   this.equal = assert(equal, 'Expected %s to equal %s', 'Expected %s to not equal %s');
+  this.match = assert(match, 'Expected %s to match %s', 'Expected %s to not match %s');
 
   Object.defineProperty(this, 'be', {
     get: be
