@@ -56,7 +56,7 @@ describe('expect', function() {
       it('uses the path in the result message', function() {
         var obj = { foo: { bar: 'baz' } };
         subject.expect(obj, 'foo.gumpf').to.equal('baz');
-        expect(subject.results[0]).to.equal('Expected \'foo.gumpf\' to equal \'baz\'');
+        expect(subject.results[0]).to.equal('Expected [undefined] to equal \'baz\'');
       });
     });
 
@@ -74,7 +74,7 @@ describe('expect', function() {
       it('uses the path in the result message', function() {
         var obj = { foo: [1,{ bar: 'baz' },3] };
         subject.expect(obj, 'foo.1.gumpf').to.equal('baz');
-        expect(subject.results[0]).to.equal('Expected \'foo.1.gumpf\' to equal \'baz\'');
+        expect(subject.results[0]).to.equal('Expected [undefined] to equal \'baz\'');
       });
     });
   });
@@ -167,7 +167,7 @@ describe('assertion methods', function() {
 
     it('can fail truthyness', function() {
       expect(subject.expect(undefined).to.be.ok).to.be.false;
-      expect(subject.results[0]).to.eql('Expected undefined to be truthy');
+      expect(subject.results[0]).to.eql('Expected [undefined] to be truthy');
     });
   });
 
@@ -299,6 +299,23 @@ describe('custom messages', function() {
     it('uses the custom message in the validation message', function() {
       subject.expect('foo').withMessage('this should not have happened').to.equal('bar')
       expect(subject.results[0]).to.equal('this should not have happened');
+    });
+
+    it('can interpolate the expectation value', function() {
+      subject.expect('foo').withMessage('expected \'foo\' to equal #{e}').to.equal('bar')
+      expect(subject.results[0]).to.equal('expected \'foo\' to equal \'bar\'');
+    });
+
+    it('can interpolate the actual value', function() {
+      subject.expect('foo').withMessage('expected #{a} to equal \'bar\'').to.equal('bar')
+      expect(subject.results[0]).to.equal('expected \'foo\' to equal \'bar\'');
+    });
+
+    it('can interpolate the path value', function() {
+      subject.expect({foo: {bar: 'baz'}}, 'foo.bar')
+        .withMessage('expected #{p} = \'baz\' to equal \'bar\'')
+        .to.equal('bar')
+      expect(subject.results[0]).to.equal('expected \'foo.bar\' = \'baz\' to equal \'bar\'');
     });
   });
 });

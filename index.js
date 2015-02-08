@@ -53,6 +53,10 @@ function format(value) {
   if (_.isNull(value)) {
     return 'null';
   }
+
+  if (_.isUndefined(value)) {
+    return '[undefined]';
+  }
 }
 
 function assert(predicate, message, negatedMessage) {
@@ -65,9 +69,9 @@ function assert(predicate, message, negatedMessage) {
 
     if (!result) {
       if (!this.negate) {
-        this.addResult(this.customMessage || message, this.path || this.value, arguments[0]);
+        this.addResult(this.customMessage || message, this.value, this.path, arguments[0]);
       } else {
-        this.addResult(negatedMessage, this.path || this.value, arguments[0]);
+        this.addResult(negatedMessage, this.value, this.path, arguments[0]);
       }
     }
 
@@ -106,14 +110,14 @@ function match(regexp) {
 
 function be() {
   Object.defineProperty(this, 'ok', {
-    get: assert(ok, 'Expected %s to be truthy', 'Expected %s to not be truthy')
+    get: assert(ok, 'Expected #{a} to be truthy', 'Expected #{a} to not be truthy')
   });
 
   Object.defineProperty(this, 'empty', {
-    get: assert(empty, 'Expected %s to be empty', 'Expected %s to not be empty')
+    get: assert(empty, 'Expected #{a} to be empty', 'Expected #{a} to not be empty')
   });
 
-  this.oneOf = assert(oneOf, 'Expected %s to be one of %s', 'Expected %s to not be one of %s');
+  this.oneOf = assert(oneOf, 'Expected #{a} to be one of #{e}', 'Expected #{a} to not be one of #{e}');
 
   return this;
 }
@@ -125,9 +129,9 @@ function not() {
 }
 
 function to() {
-  this.eql = assert(eql, 'Expected %s to kind of equal %s', 'Expected %s to kind of not equal %s');
-  this.equal = assert(equal, 'Expected %s to equal %s', 'Expected %s to not equal %s');
-  this.match = assert(match, 'Expected %s to match %s', 'Expected %s to not match %s');
+  this.eql = assert(eql, 'Expected #{a} to kind of equal #{e}', 'Expected #{a} to kind of not equal #{e}');
+  this.equal = assert(equal, 'Expected #{a} to equal #{e}', 'Expected #{a} to not equal #{e}');
+  this.match = assert(match, 'Expected #{a} to match #{e}', 'Expected #{a} to not match #{e}');
 
   Object.defineProperty(this, 'be', {
     get: be
@@ -139,7 +143,7 @@ function to() {
   });
 
   Object.defineProperty(this, 'exist', {
-    get: assert(exist, 'Expected %s to exist', 'Expected %s to not exist')
+    get: assert(exist, 'Expected #{a} to exist', 'Expected #{a} to not exist')
   });
 
   return this;
@@ -147,18 +151,16 @@ function to() {
 
 function Validator() {
   var self = this;
+  var expectedRegExp = /#{e}/;
+  var actualRegExp = /#{a}/;
+  var pathRegExp = /#{p}/;
   self.results = [];
 
-  var addResult = function(message) {
-    // Exclude any arguments that are not explicitly stated in the message.
-    var otherArgs = _.tail(arguments);
-    var matches = message.match(/(%s)/g) || [];
-    formattedArgs = _.map(_.head(otherArgs, matches.length), function(arg) {
-      return format(arg);
-    });
-    formattedArgs.unshift(message);
-
-    self.results.push(util.format.apply(this, formattedArgs));
+  var addResult = function(message, value, path, expected) {
+    var newMessage = message.replace(expectedRegExp, format(expected));
+    newMessage = newMessage.replace(actualRegExp, format(value));
+    newMessage = newMessage.replace(pathRegExp, format(path));
+    self.results.push(newMessage);
   };
 
   var withMessage = function(message) {
