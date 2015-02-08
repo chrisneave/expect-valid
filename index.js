@@ -65,7 +65,7 @@ function assert(predicate, message, negatedMessage) {
 
     if (!result) {
       if (!this.negate) {
-        this.addResult(message, this.path || this.value, arguments[0]);
+        this.addResult(this.customMessage || message, this.path || this.value, arguments[0]);
       } else {
         this.addResult(negatedMessage, this.path || this.value, arguments[0]);
       }
@@ -152,7 +152,8 @@ function Validator() {
   var addResult = function(message) {
     // Exclude any arguments that are not explicitly stated in the message.
     var otherArgs = _.tail(arguments);
-    formattedArgs = _.map(_.head(otherArgs, message.match(/(%s)/g).length), function(arg) {
+    var matches = message.match(/(%s)/g) || [];
+    formattedArgs = _.map(_.head(otherArgs, matches.length), function(arg) {
       return format(arg);
     });
     formattedArgs.unshift(message);
@@ -160,12 +161,18 @@ function Validator() {
     self.results.push(util.format.apply(this, formattedArgs));
   };
 
+  var withMessage = function(message) {
+    this.customMessage = message;
+    return this;
+  };
+
   self.expect = function(subject, path) {
     var context = {
       value: find(subject, path),
       path: path,
       negate: false,
-      addResult: addResult
+      addResult: addResult,
+      withMessage: withMessage
     };
 
     Object.defineProperty(context, 'to', {

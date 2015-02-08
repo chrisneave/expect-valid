@@ -287,3 +287,18 @@ describe('language chains', function() {
     });
   });
 });
+
+describe('custom messages', function() {
+  var subject;
+
+  beforeEach(function() {
+    subject = new Validator();
+  });
+
+  describe('#withMessage', function() {
+    it('uses the custom message in the validation message', function() {
+      subject.expect('foo').withMessage('this should not have happened').to.equal('bar')
+      expect(subject.results[0]).to.equal('this should not have happened');
+    });
+  });
+});
