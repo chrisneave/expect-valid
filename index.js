@@ -151,16 +151,21 @@ function to() {
 
 function Validator() {
   var self = this;
-  var expectedRegExp = /#{e}/;
-  var actualRegExp = /#{a}/;
-  var pathRegExp = /#{p}/;
+  var regExps = [/#{a}/, /#{p}/, /#{e}/];
   self.results = [];
 
   var addResult = function(message, value, path, expected) {
-    var newMessage = message.replace(expectedRegExp, format(expected));
-    newMessage = newMessage.replace(actualRegExp, format(value));
-    newMessage = newMessage.replace(pathRegExp, format(path));
-    self.results.push(newMessage);
+    var args = arguments;
+    var newMessage = _.reduce(regExps, function(memo, re, index) {
+      return memo.replace(re, format(args[index + 1]));
+    }, message);
+
+    self.results.push({
+      message: newMessage,
+      actual: value,
+      expected: expected,
+      path: path
+    });
   };
 
   var withMessage = function(message) {

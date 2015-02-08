@@ -56,7 +56,7 @@ describe('expect', function() {
       it('uses the path in the result message', function() {
         var obj = { foo: { bar: 'baz' } };
         subject.expect(obj, 'foo.gumpf').to.equal('baz');
-        expect(subject.results[0]).to.equal('Expected [undefined] to equal \'baz\'');
+        expect(subject.results[0].message).to.equal('Expected [undefined] to equal \'baz\'');
       });
     });
 
@@ -74,7 +74,7 @@ describe('expect', function() {
       it('uses the path in the result message', function() {
         var obj = { foo: [1,{ bar: 'baz' },3] };
         subject.expect(obj, 'foo.1.gumpf').to.equal('baz');
-        expect(subject.results[0]).to.equal('Expected [undefined] to equal \'baz\'');
+        expect(subject.results[0].message).to.equal('Expected [undefined] to equal \'baz\'');
       });
     });
   });
@@ -95,12 +95,12 @@ describe('assertion methods', function() {
 
       it('can negate test for strict equality', function() {
         expect(subject.expect('foo').to.not.equal('foo')).to.be.false;
-        expect(subject.results[0]).to.equal('Expected \'foo\' to not equal \'foo\'');
+        expect(subject.results[0].message).to.equal('Expected \'foo\' to not equal \'foo\'');
       });
 
       it('can fail strict equality', function() {
         expect(subject.expect('1').to.equal('2')).to.be.false;
-        expect(subject.results[0]).to.equal('Expected \'1\' to equal \'2\'');
+        expect(subject.results[0].message).to.equal('Expected \'1\' to equal \'2\'');
       });
     });
   });
@@ -113,12 +113,12 @@ describe('assertion methods', function() {
 
       it('can negate test for deep equality', function() {
         expect(subject.expect('1').to.not.eql(1)).to.be.false;
-        expect(subject.results[0]).to.eql('Expected \'1\' to kind of not equal 1');
+        expect(subject.results[0].message).to.eql('Expected \'1\' to kind of not equal 1');
       });
 
       it('can fail deep equality', function() {
         expect(subject.expect('one').to.eql(1)).to.be.false;
-        expect(subject.results[0]).to.eql('Expected \'one\' to kind of equal 1');
+        expect(subject.results[0].message).to.eql('Expected \'one\' to kind of equal 1');
       });
     });
 
@@ -129,12 +129,12 @@ describe('assertion methods', function() {
 
       it('can negate test for deep equality', function() {
         expect(subject.expect([1,2,3]).to.not.eql([1,2,3])).to.be.false;
-        expect(subject.results[0]).to.eql('Expected [1,2,3] to kind of not equal [1,2,3]');
+        expect(subject.results[0].message).to.eql('Expected [1,2,3] to kind of not equal [1,2,3]');
       });
 
       it('can fail deep equality', function() {
         expect(subject.expect({ foo: 'bar' }).to.eql({ foo: 'gumpf' })).to.be.false;
-        expect(subject.results[0]).to.eql('Expected {"foo":"bar"} to kind of equal {"foo":"gumpf"}');
+        expect(subject.results[0].message).to.eql('Expected {"foo":"bar"} to kind of equal {"foo":"gumpf"}');
       });
     });
 
@@ -145,12 +145,12 @@ describe('assertion methods', function() {
 
       it('can negate test for deep equality', function() {
         expect(subject.expect({ foo: 'bar' }).to.not.eql({ foo: 'bar' })).to.be.false;
-        expect(subject.results[0]).to.eql('Expected {"foo":"bar"} to kind of not equal {"foo":"bar"}');
+        expect(subject.results[0].message).to.eql('Expected {"foo":"bar"} to kind of not equal {"foo":"bar"}');
       });
 
       it('can fail deep equality', function() {
         expect(subject.expect({ foo: 'bar' }).to.eql({ foo: 'gumpf' })).to.be.false;
-        expect(subject.results[0]).to.eql('Expected {"foo":"bar"} to kind of equal {"foo":"gumpf"}');
+        expect(subject.results[0].message).to.eql('Expected {"foo":"bar"} to kind of equal {"foo":"gumpf"}');
       });
     });
   });
@@ -162,12 +162,12 @@ describe('assertion methods', function() {
 
     it('can negate truthyness', function() {
       expect(subject.expect('1').to.not.be.ok).to.be.false;
-      expect(subject.results[0]).to.eql('Expected \'1\' to not be truthy');
+      expect(subject.results[0].message).to.eql('Expected \'1\' to not be truthy');
     });
 
     it('can fail truthyness', function() {
       expect(subject.expect(undefined).to.be.ok).to.be.false;
-      expect(subject.results[0]).to.eql('Expected [undefined] to be truthy');
+      expect(subject.results[0].message).to.eql('Expected [undefined] to be truthy');
     });
   });
 
@@ -179,12 +179,12 @@ describe('assertion methods', function() {
 
       it('can negate test for emptiness', function() {
         expect(subject.expect('').to.not.be.empty).to.be.false;
-        expect(subject.results[0]).to.equal('Expected \'\' to not be empty');
+        expect(subject.results[0].message).to.equal('Expected \'\' to not be empty');
       });
 
       it('can test for not emptiness', function() {
         expect(subject.expect('aa').to.be.empty).to.be.false;
-        expect(subject.results[0]).to.equal('Expected \'aa\' to be empty');
+        expect(subject.results[0].message).to.equal('Expected \'aa\' to be empty');
       });
     });
 
@@ -195,12 +195,12 @@ describe('assertion methods', function() {
 
       it('can negate test for emptiness', function() {
         expect(subject.expect([]).to.not.be.empty).to.be.false;
-        expect(subject.results[0]).to.equal('Expected [] to not be empty');
+        expect(subject.results[0].message).to.equal('Expected [] to not be empty');
       });
 
       it('can test for not emptiness', function() {
         expect(subject.expect([1,2,3]).to.be.empty).to.be.false;
-        expect(subject.results[0]).to.equal('Expected [1,2,3] to be empty');
+        expect(subject.results[0].message).to.equal('Expected [1,2,3] to be empty');
       });
     });
 
@@ -211,12 +211,12 @@ describe('assertion methods', function() {
 
       it('can negate test for emptiness', function() {
         expect(subject.expect({}).to.not.be.empty).to.be.false;
-        expect(subject.results[0]).to.equal('Expected {} to not be empty');
+        expect(subject.results[0].message).to.equal('Expected {} to not be empty');
       });
 
       it('can test for not emptiness', function() {
         expect(subject.expect({foo: 'bar'}).to.be.empty).to.be.false;
-        expect(subject.results[0]).to.equal('Expected {"foo":"bar"} to be empty');
+        expect(subject.results[0].message).to.equal('Expected {"foo":"bar"} to be empty');
       });
     });
   });
@@ -228,12 +228,12 @@ describe('assertion methods', function() {
 
     it('can negate test for existence', function() {
       expect(subject.expect('foo').to.not.exist).to.be.false;
-      expect(subject.results[0]).to.equal('Expected \'foo\' to not exist');
+      expect(subject.results[0].message).to.equal('Expected \'foo\' to not exist');
     });
 
     it('can test for non-existence', function() {
       expect(subject.expect(null).to.exist).to.be.false;
-      expect(subject.results[0]).to.equal('Expected null to exist');
+      expect(subject.results[0].message).to.equal('Expected null to exist');
     });
   });
 
@@ -244,12 +244,12 @@ describe('assertion methods', function() {
 
     it('can test for non-existence', function() {
       expect(subject.expect('bar').to.be.oneOf(['foo', 'baz'])).to.be.false;
-      expect(subject.results[0]).to.equal('Expected \'bar\' to be one of ["foo","baz"]');
+      expect(subject.results[0].message).to.equal('Expected \'bar\' to be one of ["foo","baz"]');
     });
 
     it('can negate test for existence', function() {
       expect(subject.expect('bar').to.not.be.oneOf(['foo', 'bar', 'baz'])).to.be.false;
-      expect(subject.results[0]).to.equal('Expected \'bar\' to not be one of ["foo","bar","baz"]');
+      expect(subject.results[0].message).to.equal('Expected \'bar\' to not be one of ["foo","bar","baz"]');
     });
   });
 
@@ -260,12 +260,12 @@ describe('assertion methods', function() {
 
     it('can test for a RegEx non-match', function() {
       expect(subject.expect('bar').to.match(/foo/)).to.be.false;
-      expect(subject.results[0]).to.equal('Expected \'bar\' to match /foo/');
+      expect(subject.results[0].message).to.equal('Expected \'bar\' to match /foo/');
     });
 
     it('can negate test for a RegEx match', function() {
       expect(subject.expect('bar').to.not.match(/bar/)).to.be.false;
-      expect(subject.results[0]).to.equal('Expected \'bar\' to not match /bar/');
+      expect(subject.results[0].message).to.equal('Expected \'bar\' to not match /bar/');
     });
   });
 });
@@ -298,24 +298,57 @@ describe('custom messages', function() {
   describe('#withMessage', function() {
     it('uses the custom message in the validation message', function() {
       subject.expect('foo').withMessage('this should not have happened').to.equal('bar')
-      expect(subject.results[0]).to.equal('this should not have happened');
+      expect(subject.results[0].message).to.equal('this should not have happened');
     });
 
     it('can interpolate the expectation value', function() {
       subject.expect('foo').withMessage('expected \'foo\' to equal #{e}').to.equal('bar')
-      expect(subject.results[0]).to.equal('expected \'foo\' to equal \'bar\'');
+      expect(subject.results[0].message).to.equal('expected \'foo\' to equal \'bar\'');
     });
 
     it('can interpolate the actual value', function() {
       subject.expect('foo').withMessage('expected #{a} to equal \'bar\'').to.equal('bar')
-      expect(subject.results[0]).to.equal('expected \'foo\' to equal \'bar\'');
+      expect(subject.results[0].message).to.equal('expected \'foo\' to equal \'bar\'');
     });
 
     it('can interpolate the path value', function() {
       subject.expect({foo: {bar: 'baz'}}, 'foo.bar')
         .withMessage('expected #{p} = \'baz\' to equal \'bar\'')
         .to.equal('bar')
-      expect(subject.results[0]).to.equal('expected \'foo.bar\' = \'baz\' to equal \'bar\'');
+      expect(subject.results[0].message).to.equal('expected \'foo.bar\' = \'baz\' to equal \'bar\'');
     });
+  });
+});
+
+describe('result objects', function() {
+  var subject;
+
+  beforeEach(function() {
+    subject = new Validator();
+  });
+
+  it('includes the validation message', function() {
+    subject.expect('foo').to.equal('bar')
+    expect(subject.results[0].message).to.equal('Expected \'foo\' to equal \'bar\'');
+  });
+
+  it('includes the custom validation message', function() {
+    subject.expect('foo').withMessage('woohoo').to.equal('bar')
+    expect(subject.results[0].message).to.equal('woohoo');
+  });
+
+  it('includes the actual value', function() {
+    subject.expect('foo').to.equal('bar')
+    expect(subject.results[0].actual).to.equal('foo');
+  });
+
+  it('includes the expected value', function() {
+    subject.expect('foo').to.equal('bar')
+    expect(subject.results[0].expected).to.equal('bar');
+  });
+
+  it('includes the path value', function() {
+    subject.expect({foo: {bar: 'baz'}}, 'foo.bar').to.equal('bar')
+    expect(subject.results[0].path).to.equal('foo.bar');
   });
 });
