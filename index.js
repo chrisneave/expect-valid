@@ -46,6 +46,10 @@ function format(value) {
     return value.toString();
   }
 
+  if (_.isFunction(value)) {
+    return util.format('\'%s\'', value.toString());
+  }
+
   if (_.isObject(value)) {
     return util.format('%s', JSON.stringify(value));
   }
@@ -108,6 +112,10 @@ function match(regexp) {
   return regexp.test(this.value);
 }
 
+function satisfy(f) {
+  return f(this.value);
+}
+
 function be() {
   Object.defineProperty(this, 'ok', {
     get: assert(ok, 'Expected #{a} to be truthy', 'Expected #{a} to not be truthy')
@@ -132,6 +140,7 @@ function to() {
   this.eql = assert(eql, 'Expected #{a} to kind of equal #{e}', 'Expected #{a} to kind of not equal #{e}');
   this.equal = assert(equal, 'Expected #{a} to equal #{e}', 'Expected #{a} to not equal #{e}');
   this.match = assert(match, 'Expected #{a} to match #{e}', 'Expected #{a} to not match #{e}');
+  this.satisfy = assert(satisfy, 'Expected #{a} to satisfy #{e}', 'Expected #{a} to not satisfy #{e}');
 
   Object.defineProperty(this, 'be', {
     get: be

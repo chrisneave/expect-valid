@@ -253,7 +253,7 @@ describe('assertion methods', function() {
     });
   });
 
-  describe('#in', function() {
+  describe('#match', function() {
     it('can test for a RegEx match', function() {
       expect(subject.expect('bar').to.match(/bar/)).to.be.true;
     });
@@ -266,6 +266,26 @@ describe('assertion methods', function() {
     it('can negate test for a RegEx match', function() {
       expect(subject.expect('bar').to.not.match(/bar/)).to.be.false;
       expect(subject.results[0].message).to.equal('Expected \'bar\' to not match /bar/');
+    });
+  });
+
+  describe('#satisfy', function() {
+    var isBar = function (value) {
+      return value === 'bar'
+    }
+
+    it('can test that a value does satisfy a function predicate', function() {
+      expect(subject.expect('bar').to.satisfy(isBar)).to.be.true;
+    });
+
+    it('can test that a value does not satisfy a function predicate', function() {
+      expect(subject.expect('foo').to.satisfy(isBar)).to.be.false;
+      expect(subject.results[0].message).to.equal('Expected \'foo\' to satisfy \'' + isBar.toString() + '\'');
+    });
+
+    it('can negate test using a function predicate', function() {
+      expect(subject.expect('bar').to.not.satisfy(isBar)).to.be.false;
+      expect(subject.results[0].message).to.equal('Expected \'bar\' to not satisfy \'' + isBar.toString() + '\'');
     });
   });
 });
