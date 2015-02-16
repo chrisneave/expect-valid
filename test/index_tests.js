@@ -171,6 +171,38 @@ describe('assertion methods', function() {
     });
   });
 
+  describe('#true', function() {
+    it('can test for strict true', function() {
+      expect(subject.expect(true).to.be.true).to.be.true;
+    });
+
+    it('can fail strict true', function() {
+      expect(subject.expect(false).to.be.true).to.be.false;
+      expect(subject.results[0].message).to.eql('Expected false to be true');
+    });
+
+    it('can negate strict true', function() {
+      expect(subject.expect(true).to.not.be.true).to.be.false;
+      expect(subject.results[0].message).to.eql('Expected true to not be true');
+    });
+  });
+
+  describe('#false', function() {
+    it('can test for strict false', function() {
+      expect(subject.expect(false).to.be.false).to.be.true;
+    });
+
+    it('can fail strict false', function() {
+      expect(subject.expect(true).to.be.false).to.be.false;
+      expect(subject.results[0].message).to.eql('Expected true to be false');
+    });
+
+    it('can negate strict false', function() {
+      expect(subject.expect(false).to.not.be.false).to.be.false;
+      expect(subject.results[0].message).to.eql('Expected false to not be false');
+    });
+  });
+
   describe('#empty', function() {
     describe('strings', function() {
       it('can test for emptiness', function() {

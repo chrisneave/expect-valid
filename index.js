@@ -34,20 +34,16 @@ function find(object, path) {
 }
 
 function format(value) {
-  if (_.isString(value)) {
-    return util.format('\'%s\'', value);
+  if (_.isString(value) || _.isFunction(value)) {
+    return util.format('\'%s\'', value.toString());
   }
 
   if (_.isNumber(value)) {
     return value;
   }
 
-  if (_.isRegExp(value)) {
+  if (_.isRegExp(value) || _.isBoolean(value)) {
     return value.toString();
-  }
-
-  if (_.isFunction(value)) {
-    return util.format('\'%s\'', value.toString());
   }
 
   if (_.isObject(value)) {
@@ -116,7 +112,13 @@ function satisfy(f) {
   return f(this.value);
 }
 
+function isTrue() {
+  return this.value && true;
+}
+
 function be() {
+  this.oneOf = assert(oneOf, 'Expected #{a} to be one of #{e}', 'Expected #{a} to not be one of #{e}');
+
   Object.defineProperty(this, 'ok', {
     get: assert(ok, 'Expected #{a} to be truthy', 'Expected #{a} to not be truthy')
   });
@@ -125,7 +127,13 @@ function be() {
     get: assert(empty, 'Expected #{a} to be empty', 'Expected #{a} to not be empty')
   });
 
-  this.oneOf = assert(oneOf, 'Expected #{a} to be one of #{e}', 'Expected #{a} to not be one of #{e}');
+  Object.defineProperty(this, 'true', {
+    get: assert(isTrue, 'Expected #{a} to be true', 'Expected #{a} to not be true')
+  });
+
+  Object.defineProperty(this, 'false', {
+    get: assert(_.negate(isTrue), 'Expected #{a} to be false', 'Expected #{a} to not be false')
+  });
 
   return this;
 }
