@@ -71,7 +71,7 @@ function assert(predicate, message, negatedMessage) {
       if (!this.negate) {
         this.addResult(this.customMessage || message, this.value, this.path, arguments[0]);
       } else {
-        this.addResult(negatedMessage, this.value, this.path, arguments[0]);
+        this.addResult(this.customMessage || negatedMessage, this.value, this.path, arguments[0]);
       }
     }
 

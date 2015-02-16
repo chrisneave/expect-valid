@@ -301,6 +301,13 @@ describe('custom messages', function() {
       expect(subject.results[0].message).to.equal('this should not have happened');
     });
 
+    describe('when a negation is in effect', function() {
+      it('uses the custom message in the validation message', function() {
+        subject.expect('bar').withMessage('this should not have happened').to.not.equal('bar');
+        expect(subject.results[0].message).to.equal('this should not have happened');
+      });
+    });
+
     it('can interpolate the expectation value', function() {
       subject.expect('foo').withMessage('expected \'foo\' to equal #{e}').to.equal('bar')
       expect(subject.results[0].message).to.equal('expected \'foo\' to equal \'bar\'');
