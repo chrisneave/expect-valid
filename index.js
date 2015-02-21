@@ -22,6 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+/* global require */
+/* global module */
+/* jshint -W097 */
+/* jshint -W040 */
+
+'use strict';
+
 var _ = require('underscore');
 var util = require('util');
 

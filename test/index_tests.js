@@ -303,8 +303,8 @@ describe('assertion methods', function() {
 
   describe('#satisfy', function() {
     var isBar = function (value) {
-      return value === 'bar'
-    }
+      return value === 'bar';
+    };
 
     it('can test that a value does satisfy a function predicate', function() {
       expect(subject.expect('bar').to.satisfy(isBar)).to.be.true;
@@ -349,7 +349,7 @@ describe('custom messages', function() {
 
   describe('#withMessage', function() {
     it('uses the custom message in the validation message', function() {
-      subject.expect('foo').withMessage('this should not have happened').to.equal('bar')
+      subject.expect('foo').withMessage('this should not have happened').to.equal('bar');
       expect(subject.results[0].message).to.equal('this should not have happened');
     });
 
@@ -361,19 +361,19 @@ describe('custom messages', function() {
     });
 
     it('can interpolate the expectation value', function() {
-      subject.expect('foo').withMessage('expected \'foo\' to equal #{e}').to.equal('bar')
+      subject.expect('foo').withMessage('expected \'foo\' to equal #{e}').to.equal('bar');
       expect(subject.results[0].message).to.equal('expected \'foo\' to equal \'bar\'');
     });
 
     it('can interpolate the actual value', function() {
-      subject.expect('foo').withMessage('expected #{a} to equal \'bar\'').to.equal('bar')
+      subject.expect('foo').withMessage('expected #{a} to equal \'bar\'').to.equal('bar');
       expect(subject.results[0].message).to.equal('expected \'foo\' to equal \'bar\'');
     });
 
     it('can interpolate the path value', function() {
       subject.expect({foo: {bar: 'baz'}}, 'foo.bar')
         .withMessage('expected #{p} = \'baz\' to equal \'bar\'')
-        .to.equal('bar')
+        .to.equal('bar');
       expect(subject.results[0].message).to.equal('expected \'foo.bar\' = \'baz\' to equal \'bar\'');
     });
   });
@@ -387,27 +387,27 @@ describe('result objects', function() {
   });
 
   it('includes the validation message', function() {
-    subject.expect('foo').to.equal('bar')
+    subject.expect('foo').to.equal('bar');
     expect(subject.results[0].message).to.equal('Expected \'foo\' to equal \'bar\'');
   });
 
   it('includes the custom validation message', function() {
-    subject.expect('foo').withMessage('woohoo').to.equal('bar')
+    subject.expect('foo').withMessage('woohoo').to.equal('bar');
     expect(subject.results[0].message).to.equal('woohoo');
   });
 
   it('includes the actual value', function() {
-    subject.expect('foo').to.equal('bar')
+    subject.expect('foo').to.equal('bar');
     expect(subject.results[0].actual).to.equal('foo');
   });
 
   it('includes the expected value', function() {
-    subject.expect('foo').to.equal('bar')
+    subject.expect('foo').to.equal('bar');
     expect(subject.results[0].expected).to.equal('bar');
   });
 
   it('includes the path value', function() {
-    subject.expect({foo: {bar: 'baz'}}, 'foo.bar').to.equal('bar')
+    subject.expect({foo: {bar: 'baz'}}, 'foo.bar').to.equal('bar');
     expect(subject.results[0].path).to.equal('foo.bar');
   });
 });
