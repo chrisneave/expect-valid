@@ -269,7 +269,7 @@ describe('assertion methods', function() {
     });
   });
 
-  describe('#in', function() {
+  describe('#oneOf', function() {
     it('can test for inclusion', function() {
       expect(subject.expect('bar').to.be.oneOf(['foo', 'bar', 'baz'])).to.be.true;
     });
